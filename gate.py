@@ -15,6 +15,10 @@ class GateMission (object):
         self.aicontrol = AIControl()
 
     def run_with_vision (self):
+        #if straight
+            #go
+        #else
+            #move to target
 
     def run_without_vision (self):
         self.aicontrol.drive ([1,0,0,0,0,0])

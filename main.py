@@ -1,7 +1,9 @@
 import rospy
 import math
 from gate import GateMission
-from path import BouyMission
+from path import PathMission
+from bouy import BouyMission
+from navigate import NavigateMission
 from AIControl import AIControl
 
 from modbus_ascii_ros.msg import Switch
@@ -13,6 +15,15 @@ def function (switch):
         print "Do AI"
         start()
         gate()
+        path()
+        bouy()
+        path()
+        navigate()
+        pinger()
+        binn()
+        sett()
+        pinger()
+        bury()
 
 def start (self):
     aicontrol = AIControl()

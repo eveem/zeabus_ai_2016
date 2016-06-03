@@ -35,4 +35,5 @@ class AIControl():
             self.this.publish(tw)
             rospy.sleep(0.05)
 
-    def detect (self, object, mission):
+    def find_object (self, object, color, mission):
+        #return True or False

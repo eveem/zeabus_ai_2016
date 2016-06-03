@@ -13,6 +13,16 @@ class PathMission (object):
         print "Now do path"
         # subscribe vision
         self.aicontrol = AIControl()
-        self.found = False
 
-    
+    def run (self):
+        #while not found
+            #move to find
+        #while not center
+            #move to find center
+        #set your auv head
+
+if __name__ == '__main__':
+    path_mission = PathMission()
+    #command
+    path_mission.run()
+    print "finish path"
