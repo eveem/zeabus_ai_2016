@@ -164,6 +164,10 @@ class AIControl():
         self.drive_xy(x,y)
     ##### endNavigation function #####
 
+    ##### image function #####
+
+
+
     def is_center (self, point, xmin, xmax, ymin, ymax):
         if (xmin <= point[0] and point[0] <= xmax) and (ymin <= point[1] and point[1] <= ymax):
             return True
@@ -177,6 +181,10 @@ class AIControl():
             if value > m_min : return m_min
             if value < m_max : return m_max
         return value
+
+    def is_fail(self,count):
+        if count>0:return False
+        return True
 
 if __name__=='__main__':
     print 'AIControl'

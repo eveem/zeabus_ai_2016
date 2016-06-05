@@ -14,18 +14,22 @@ class GateMission (object):
         # subscribe vision
         self.aicontrol = AIControl()
 
-    def run_with_vision (self):
+    # def run_with_vision (self):
         #if straight
             #go
         #else
             #move to target
 
     def run_without_vision (self):
+        self.aicontrol.turn_yaw_relative(15)
         self.aicontrol.drive ([1,0,0,0,0,0])
-        rospy.sleep(20) #change time to wait
-        print "forward complete"
+        rospy.sleep(13) #change time to wait
+        print "forward"
+        self.aicontrol.stop()
+        rospy.sleep(10)
 
 if __name__ == '__main__':
+    print 'start gate'
     gate_mission = GateMission()
     #command
     gate_mission.run_without_vision()
