@@ -15,6 +15,7 @@ def function (switch):
         print "Do AI"
         start()
         gate()
+        '''
         path()
         bouy()
         path()
@@ -24,10 +25,11 @@ def function (switch):
         sett()
         pinger()
         bury()
+        '''
 
 def start (self):
     aicontrol = AIControl()
-    aicontrol.drive ([0,0,-2,0,0,0])
+    aicontrol.drive_z ([0,0,-1.5,0,0,0])
 
 if __name__ == '__main__':
     rospy.init_node('main_ai')
