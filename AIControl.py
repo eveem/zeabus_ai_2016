@@ -107,7 +107,7 @@ class AIControl():
         if(diff>=0):
             return abs(diff)
         return -abs(diff)
-        
+
     def drive_xy(self,x,y):
         ### v : velocity
         v=[0,0,0,0,0,0]
@@ -164,7 +164,8 @@ class AIControl():
 
     ##### image function #####
     def find_object (self, object, req):
-        #return True or False
+        #return list [x,y,area,angle]
+        #if not found return [-999,-999,-999,-999]
 
     def is_center (self, point, xmin, xmax, ymin, ymax):
         if (xmin <= point[0] and point[0] <= xmax) and (ymin <= point[1] and point[1] <= ymax):
