@@ -100,6 +100,12 @@ class AIControl():
     def distance(self,x,y):
         return sum(map(lambda x,y : (x-y) **2 ,x,y))**0.5
 
+    def twopi(self,rad):
+        if(rad<=0):
+            return abs(rad)
+        else:
+            return 2*math.pi-rad
+
     def w_yaw(self,setyaw):
         degi=self.twopi(self.auv[5])
         degf=self.twopi(setyaw)
@@ -122,22 +128,22 @@ class AIControl():
             v[0]=min(disnow,0.3)
 
             if(disnow>=1):
-                v[5]=self.w_yaw(self.rad_diff())
+                v[5]=self.w_yaw(self.delta_radians(x,y))
 
-            if(disnow<=self.err_dis):
+            if(disnow<=self.err):
                 self.stop()
                 break
             self.drive(v)
 
     def turn_yaw(self,radians):
-        self.turn_abs(math.degrees(radians))
+        self.turn_yaw_absolute(math.degrees(radians))
 
         while not rospy.is_shutdown() and not (self.auv[5]>=radians-self.err and self.auv[5]<=radians+self.err):
             pass
 
         self.stop()
 
-    def delta_radians (selfx,y):
+    def delta_radians (self,x,y):
         radians = math.atan2(x-self.auv[0],y-self.auv[1])
         radians -= math.pi/2
         radians *= -1
@@ -160,7 +166,7 @@ class AIControl():
     def goto(self,x,y,z):
         self.drive_z(z)
         radians = self.delta_radians(x,y)
-        self.turn_yaw(radians)
+        self.turn_yaw_relative(radians)
         self.drive_xy(x,y)
     ##### endNavigation function #####
 
