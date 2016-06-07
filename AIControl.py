@@ -13,7 +13,7 @@ class AIControl():
         return cls._instance
 
     def __init__ (self):
-        self.err = 0.5
+        self.err = 0.4
         self.pose = Pose()
         self.auv = [0,0,0,0,0,0]
         self.goal = [-999,-999,-999]
@@ -36,7 +36,7 @@ class AIControl():
 
     def pub (self, tw):
         print "linear  x:%f y:%f z:%f"%(tw.linear.x,tw.linear.y,tw.linear.z)
-        print "angular x:%f y:%f z:%f"%(tw.angular.x,tw.angular.y,tw.angular.z)
+        # print "angular x:%f y:%f z:%f"%(tw.angular.x,tw.angular.y,tw.angular.z)
         for i in xrange(3):
             self.command.publish(tw)
             rospy.sleep(0.05)
@@ -52,6 +52,10 @@ class AIControl():
         self.auv[3] = ang[0]
         self.auv[4] = ang[1]
         self.auv[5] = ang[2]
+        # print self.auv
+
+    def get_pose(self):
+        return self.auv
     ##### end set environment #####
 
     ##### move auv command #####
@@ -116,24 +120,30 @@ class AIControl():
             return abs(diff)
         return -abs(diff)
 
-    def drive_xy(self,x,y):
+    def drive_xy(self,x,y,bit):
         ### v : velocity
-        v=[0,0,0,0,0,0]
+        print 'drive xy'
+        v = [0,0,0,0,0,0]
         while not rospy.is_shutdown():
+            print self.auv
             delta_y=abs(x-self.auv[1])
             delta_x=abs(y-self.auv[2])
             rad=abs(self.auv[5]-math.atan2(delta_x,delta_y))
 
             disnow = self.distance((x,y),(self.auv[0],self.auv[1]))
-            v[0]=min(disnow,0.3)
+            v[0]=min(disnow,0.3)*bit
 
             if(disnow>=1):
-                v[5]=self.w_yaw(self.delta_radians(x,y))
+                v[5]=self.w_yaw(self.delta_radians(x,y,bit))
 
-            if(disnow<=self.err):
+
+            if(disnow <= self.err):
                 self.stop()
+                rospy.sleep(0.25)
                 break
             self.drive(v)
+            rospy.sleep(0.25)
+        print 'Finish drive_xy'
 
     def turn_yaw(self,radians):
         self.turn_yaw_absolute(math.degrees(radians))
@@ -143,8 +153,8 @@ class AIControl():
 
         self.stop()
 
-    def delta_radians (self,x,y):
-        radians = math.atan2(x-self.auv[0],y-self.auv[1])
+    def delta_radians (self,x,y,bit):
+        radians = math.atan2((x-self.auv[0])*bit,(y-self.auv[1])*bit)
         radians -= math.pi/2
         radians *= -1
         if(radians > math.pi):
@@ -163,17 +173,16 @@ class AIControl():
             return abs(diff)
         return -abs(diff)
 
-    def goto(self,x,y,z):
+    def goto(self,x,y,z,bit):
         self.drive_z(z)
-        radians = self.delta_radians(x,y)
-        self.turn_yaw_relative(radians)
-        self.drive_xy(x,y)
+        radians = self.delta_radians(x,y,bit)
+        print radians
+        self.turn_yaw_relative(math.degrees(radians))
+        print 'finish turn_yaw_relative'
+        self.drive_xy(x,y,bit)
     ##### endNavigation function #####
 
     ##### image function #####
-
-
-
     def is_center (self, point, xmin, xmax, ymin, ymax):
         if (xmin <= point[0] and point[0] <= xmax) and (ymin <= point[1] and point[1] <= ymax):
             return True
@@ -196,3 +205,4 @@ if __name__=='__main__':
     print 'AIControl'
     # rospy.init_node('ai_control', anonymous=True) #comment if run main.py
     aicontrol=AIControl()
+    # aicontrol.goto(-3,-2,-1.5,-1)
