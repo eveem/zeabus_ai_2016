@@ -19,6 +19,7 @@ class PathMission (object):
         self.object = String('path')
         self.req = String('orange')
         self.angle=0
+
     def goto_path (self):
         print 'Go to Path'
         count = 50

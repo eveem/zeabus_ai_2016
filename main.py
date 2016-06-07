@@ -1,8 +1,8 @@
 import rospy
 import math
 # from gate import GateMission
-from path import PathMission
-# from bouy import BouyMission
+# from path import PathMission
+from bouy import BouyMission
 # from navigate import NavigateMission
 from AIControl import AIControl
 # from modbus_ascii_ros.msg import Switch
@@ -36,5 +36,7 @@ if __name__ == '__main__':
     # start()
     # gate_mission = GateMission()
     # gate_mission.run_without_vision()
-    path_mission = PathMission()
-    path_mission.run()
+    # path_mission = PathMission()
+    # path_mission.run()
+    bouy_mission = BouyMission()
+    bouy_mission.red_then_green()
