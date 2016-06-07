@@ -17,7 +17,7 @@ class BouyMission (object):
         ## old vision
         self.aicontrol = AIControl()
         self.object = String('bouy')
-        self.target = ['yellow','yellow']
+        self.target = ['red','red']
         self.first_point = Pose()
         self.point = Pose()
 
@@ -32,6 +32,7 @@ class BouyMission (object):
                 b = 80
                 if object_data.value > 20000 :
                     b = 100
+                    print 'detect center by near value'
 
                 if object_data.appear :
                     if self.aicontrol.is_center([object_data.x,object_data.y],-b,b,-b,b):
@@ -45,9 +46,11 @@ class BouyMission (object):
                     if object_data.value > 20000 :
                         vy = self.aicontrol.adjust (object_data.x/100, -0.4, -0.1, 0.1, 0.4)
                         vz = self.aicontrol.adjust (object_data.y/100, -0.4, -0.1, 0.1, 0.4)
+                        print 'near'
                     else :
                         vy = self.aicontrol.adjust (object_data.x/100, -0.5, -0.2, 0.2, 0.5)
                         vz = self.aicontrol.adjust (object_data.y/100, -0.5, -0.2, 0.2, 0.5)
+                        print 'far'
                     self.aicontrol.drive([1,vy,vz,0,0,0])
                     rospy.sleep(0.25)
                     self.point = self.aicontrol.get_pose()
