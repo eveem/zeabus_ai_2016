@@ -29,7 +29,6 @@ class NavigateMission (object):
             if object_data.appear :
                 if self.aicontrol.is_center([object_data.x,object_data.y],-40,40,-40,40):
                     print 'Center'
-                    break
                 else :
                     print 'Not Center'
                     count -= 0.5

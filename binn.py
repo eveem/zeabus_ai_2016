@@ -30,7 +30,6 @@ class BinnMission (object):
             if object_data.appear :
                 if self.aicontrol.is_center([object_data.x,object_data.y],-50,50,-50,50):
                     print 'Center'
-                    break
                 else :
                     print 'Not Center'
                     count -= 0.5

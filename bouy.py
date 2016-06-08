@@ -36,9 +36,7 @@ class BouyMission (object):
 
                 if object_data.appear :
                     if self.aicontrol.is_center([object_data.x,object_data.y],-b,b,-b,b):
-                        self.angle = object_data.angle
                         print 'Center'
-                        break
                     else :
                         print 'Not Center'
                         count -= 0.5
@@ -46,12 +44,14 @@ class BouyMission (object):
                     if object_data.value > 20000 :
                         vy = self.aicontrol.adjust (object_data.x/100, -0.4, -0.1, 0.1, 0.4)
                         vz = self.aicontrol.adjust (object_data.y/100, -0.4, -0.1, 0.1, 0.4)
+                        go = 0.5
                         print 'near'
                     else :
                         vy = self.aicontrol.adjust (object_data.x/100, -0.5, -0.2, 0.2, 0.5)
                         vz = self.aicontrol.adjust (object_data.y/100, -0.5, -0.2, 0.2, 0.5)
+                        go = 1
                         print 'far'
-                    self.aicontrol.drive([1,vy,vz,0,0,0])
+                    self.aicontrol.drive([go,vy,vz,0,0,0])
                     rospy.sleep(0.25)
                     self.point = self.aicontrol.get_pose()
                 else :
