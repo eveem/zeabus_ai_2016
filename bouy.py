@@ -58,6 +58,7 @@ class BouyMission (object):
                     count -= 1
                 rospy.sleep(0.25)
             #self.point = self.point.pose
+            print 'backward'
             self.aicontrol.drive ([-1,0,0,0,0,0])
             rospy.sleep (2)
             print 'go to set point'

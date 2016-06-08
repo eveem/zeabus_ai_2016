@@ -43,16 +43,17 @@ class BinnMission (object):
 
         if cover == 1:
             ## grap
-            self.aicontrol.drive_z (0.1)
+            self.aicontrol.drive_z (-1)
             self.aicontrol.drive ([0,1,0,0,0,0])
             rospy.sleep(0.1)
             ## drop cover
             self.aicontrol.drive ([0,-1,0,0,0,0])
             rospy.sleep(0.1)
+            self.aicontrol.drive_z (-1.5)
         ## drop
 
 if __name__ == '__main__':
     binn_mission = BinnMission()
     #command
-    binn_mission.run(## 0 or 1##) 
+    binn_mission.run(## 0 or 1##)
     print "finish bin"
