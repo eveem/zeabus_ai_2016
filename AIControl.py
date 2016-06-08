@@ -192,7 +192,7 @@ class AIControl():
         if value > 0:
             if value > p_max : return p_max
             if value < p_min : return p_min
-        if value < 0:
+        elif value < 0:
             if value < m_min : return m_min
             if value > m_max : return m_max
         return value

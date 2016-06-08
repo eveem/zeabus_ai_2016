@@ -17,7 +17,7 @@ class BouyMission (object):
         ## old vision
         self.aicontrol = AIControl()
         self.object = String('bouy')
-        self.target = ['red','red']
+        self.target = ['green','red']
         self.first_point = Pose()
         self.point = Pose()
 
@@ -26,34 +26,38 @@ class BouyMission (object):
         for i in xrange(2):
             print 'will hit ' + self.target[i]
             count = 50
+            hit = False
             while not rospy.is_shutdown() and not self.aicontrol.is_fail(count):
                 object_data = self.detect(self.object,String(self.target[i]))
                 object_data = object_data.data
                 b = 80
-                if object_data.value > 20000 :
+                if object_data.value > 2000 :
                     b = 100
                     print 'detect center by near value'
 
                 if object_data.appear :
                     if self.aicontrol.is_center([object_data.x,object_data.y],-b,b,-b,b):
+                        go = 0.1
                         print 'Center'
                     else :
                         print 'Not Center'
+                        go = 0
                         count -= 0.5
 
-                    if object_data.value > 20000 :
-                        vy = self.aicontrol.adjust (object_data.x/100, -0.4, -0.1, 0.1, 0.4)
-                        vz = self.aicontrol.adjust (object_data.y/100, -0.4, -0.1, 0.1, 0.4)
-                        go = 0.5
-                        print 'near'
-                    else :
-                        vy = self.aicontrol.adjust (object_data.x/100, -0.5, -0.2, 0.2, 0.5)
-                        vz = self.aicontrol.adjust (object_data.y/100, -0.5, -0.2, 0.2, 0.5)
-                        go = 1
+                    if object_data.value < 2000 :
+                        vy = self.aicontrol.adjust (object_data.x/100, -0.3, -0.1, 0.1, 0.3)
+                        vz = self.aicontrol.adjust (object_data.y/100, -0.25, -0.1, 0.1, 0.25)
                         print 'far'
-                    self.aicontrol.drive([go,vy,vz,0,0,0])
+                    else :
+                        vy = self.aicontrol.adjust (object_data.x/100, -0.4, -0.1, 0.1, 0.4)
+                        vz = self.aicontrol.adjust (object_data.y/100, -0.35, -0.1, 0.1, 0.35)
+                        print 'near'
+                    self.aicontrol.drive([go,vz,vy,0,0,0])
                     rospy.sleep(0.25)
-                    self.point = self.aicontrol.get_pose()
+                    if go == 0.1:
+                        self.aicontrol.stop()
+                        rospy.sleep (0.4)
+                    # self.point = self.aicontrol.get_pose()
 
                 else :
                     count -= 1
