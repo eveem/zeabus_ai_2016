@@ -54,6 +54,7 @@ class BouyMission (object):
                     self.aicontrol.drive([go,vy,vz,0,0,0])
                     rospy.sleep(0.25)
                     self.point = self.aicontrol.get_pose()
+
                 else :
                     count -= 1
                 rospy.sleep(0.25)
