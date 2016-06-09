@@ -23,27 +23,45 @@ class NavigateMission (object):
         print 'run in navigate'
         count = 50
         object_data = Boom_Msg()
+
         while not rospy.is_shutdown() and not self.aicontrol.is_fail(count):
+
             object_data = self.detect(self.object,'''String(self.target[i])''')
             object_data = object_data.data
+
             if object_data.appear :
-                if self.aicontrol.is_center([object_data.x,object_data.y],-40,40,-40,40):
-                    print 'Center'
+                if object_data.value > 2000 : ### near ###
+                    print 'near'
+                    vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.25, -0.1, 0.1, 0.25)
+                    vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.30, -0.1, 0.1, 0.30)
+                    bc = 80
+                else : ### far ###
+                    print 'far'
+                    vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.35, -0.1, 0.1, 0.35)
+                    vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.40, -0.1, 0.1, 0.40)
+                    bc = 100
+
+                if self.aicontrol.is_center([object_data.x,object_data.y],-bc,bc,-bc,bc) :
+                    print 'center'
+                    if object_data.value > 3000 : ### very near ###
+                        break
+                    else :
+                        self.aicontrol.drive ([0.5/object_data.value,0,0,0,0,0])
                 else :
-                    print 'Not Center'
-                    count -= 0.5
-                vy = self.aicontrol.adjust (object_data.x/100, -0.5, -0.2, 0.2, 0.5)
-                vz = self.aicontrol.adjust (object_data.y/100, -0.5, -0.2, 0.2, 0.5)
-                self.aicontrol.drive([1,vy,vz,0,0,0])
+                    self.aicontrol.drive ([0,vy,vz,0,0,0])
+                    print 'not center'
+                rospy.sleep (0.25)
             else :
                 count -= 1
-            rospy.sleep (0.25)
-
+        ### end while ###
+        
         print 'see portal'
-        self.aicontrol.drive_z (1)
+        self.aicontrol.drive_z (-1)
         print 'drive style'
-        ## style
-        ## stop
+        ### style ###
+        self.aicontrol.stop ()
+        rospy.sleep (0.25)
+        print 'finish navigation channel'
 
 if __name__ == '__main__':
     navigate_mission = NavigationMission()
