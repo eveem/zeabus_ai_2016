@@ -47,6 +47,7 @@ class PathMission (object):
         if self.aicontrol.is_fail(count) :
             print 'Find Path Fail'
             return False
+
         print 'Find Path Complete'
         return True
 
