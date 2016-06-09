@@ -198,7 +198,8 @@ class AIControl():
         return value
 
     def is_fail(self,count):
-        if count>0:return False
+        if count>0:
+            return False
         return True
 
 if __name__=='__main__':
