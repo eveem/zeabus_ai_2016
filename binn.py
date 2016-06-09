@@ -32,6 +32,7 @@ class BinnMission (object):
                 if self.aicontrol.is_center ([object_data.x,object_data.y],-50,50,-50,50):
                     print 'Center'
                     if object_data.value > 2000 : ### near ###
+                        self.aicontrol.turn_yaw_relative(object_data.angle)
                         break
                     else :
                         self.aicontrol.drive_z (-2.8)
@@ -55,6 +56,8 @@ class BinnMission (object):
             self.aicontrol.drive_z (-2.8)
 
         ## drop x2 times
+        print 'drop marker yet'
+        print 'bin complete'
 
 if __name__ == '__main__':
     binn_mission = BinnMission()
