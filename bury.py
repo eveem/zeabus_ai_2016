@@ -30,7 +30,7 @@ class BuryMission (object):
                     if cone_data.value > 2000 : ### near ###
                         break
                     else :
-                        self.aicontrol.drive_z ('''number..''') ### depth of cone ###
+                        self.aicontrol.drive_z (-1.4) ### depth of cone ###
                 else :
                     print 'Cone not center'
                     vx = self.aicontrol.adjust ((cone_data.x/100)/cone_data.value, -0.4, -0.2, 0.2, 0.4)
