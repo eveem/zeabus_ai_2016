@@ -23,52 +23,61 @@ class BouyMission (object):
 
     def red_then_green (self):
         self.first_point = self.aicontrol.get_pose()
+
         for i in xrange(2):
             print 'will hit ' + self.target[i]
             count = 50
-            hit = False
-            while not rospy.is_shutdown() and not self.aicontrol.is_fail(count):
+            max_area = 0
+
+            while not rospy.is_shutdown() and not self.aicontrol.is_fail(count) :
                 object_data = self.detect(self.object,String(self.target[i]))
                 object_data = object_data.data
-                b = 80
-                if object_data.value > 2000 :
-                    b = 100
-                    print 'detect center by near value'
 
                 if object_data.appear :
-                    if self.aicontrol.is_center([object_data.x,object_data.y],-b,b,-b,b):
-                        go = 0.1
-                        print 'Center'
-                    else :
-                        print 'Not Center'
-                        go = 0
-                        count -= 0.5
+                    if object_data.value > max_area : ### 1 ###
+                        max_area = object_data.value
 
-                    if object_data.value < 2000 :
-                        vy = self.aicontrol.adjust (object_data.x/100, -0.3, -0.1, 0.1, 0.3)
-                        vz = self.aicontrol.adjust (object_data.y/100, -0.25, -0.1, 0.1, 0.25)
-                        print 'far'
-                    else :
-                        vy = self.aicontrol.adjust (object_data.x/100, -0.4, -0.1, 0.1, 0.4)
-                        vz = self.aicontrol.adjust (object_data.y/100, -0.35, -0.1, 0.1, 0.35)
+                    if object_data.value > 2000 : ### near ###
                         print 'near'
-                    self.aicontrol.drive([go,vz,vy,0,0,0])
-                    rospy.sleep(0.25)
-                    if go == 0.1:
-                        self.aicontrol.stop()
-                        rospy.sleep (0.4)
-                    # self.point = self.aicontrol.get_pose()
+                        vx = 0.5/object_data.value
+                        vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.25, -0.1, 0.1, 0.25)
+                        vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.30, -0.1, 0.1, 0.30)
+                        bc = 80
+                    else : ### far ###
+                        print 'far'
+                        vx = 0.5/object_data.value
+                        vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.35, -0.1, 0.1, 0.35)
+                        vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.40, -0.1, 0.1, 0.40)
+                        bc = 100
+
+                    if self.aicontrol.is_center([object_data.x,object_data.y],-bc,bc,-bc,bc) :
+                        self.aicontrol.drive ([vx,0,0,0,0,0])
+                        print 'go to bouy'
+                    else :
+                        self.aicontrol.drive ([0,vy,vz,0,0,0])
+                        print 'set to center'
+
+                    rospy.sleep (0.25)
 
                 else :
+                    if max_area > const_area :
+                        print 'hit'
+                        break
                     count -= 1
-                rospy.sleep(0.25)
-            #self.point = self.point.pose
+            ### end while ###
+
+            self.aicontrol.stop ()
+            print 'stop state after hit bouy'
+
             print 'backward'
             self.aicontrol.drive ([-1,0,0,0,0,0])
             rospy.sleep (2)
+
             print 'go to set point'
             self.aicontrol.goto (self.first_point.position.x,self.first_point.position.y,self.first_point.position.z,1)
             print 'finish ' + self.target[i]
+            ### end for ###
+
         print 'finish 2 bouy'
 
     def yellow_bouy (self):
