@@ -24,32 +24,37 @@ class BinnMission (object):
         count = 50
         object_data = Boom_Msg()
         while not rospy.is_shutdown() and not self.aicontrol.is_fail(count):
+
             object_data = self.detect(self.object,self.req)
             object_data = object_data.data
 
             if object_data.appear :
-                if self.aicontrol.is_center([object_data.x,object_data.y],-50,50,-50,50):
+                if self.aicontrol.is_center ([object_data.x,object_data.y],-50,50,-50,50):
                     print 'Center'
+                    if object_data.value > 2000 : ### near ###
+                        break
+                    else :
+                        self.aicontrol.drive_z (-2.8)
                 else :
                     print 'Not Center'
-                    count -= 0.5
-                vx = self.aicontrol.adjust (object_data.x/100, -0.4, -0.2, 0.2, 0.4)
-                vy = self.aicontrol.adjust (object_data.y/100, -0.4, -0.2, 0.2, 0.4)
-                self.aicontrol.drive([vx,vy,0,0,0,0])
+                    vx = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.4, -0.2, 0.2, 0.4)
+                    vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.4, -0.2, 0.2, 0.4)
+                    self.aicontrol.drive([vx,vy,0,0,0,0])
             else :
                 count -= 1
             rospy.sleep(0.25)
 
         if cover == 1:
             ## grap
-            self.aicontrol.drive_z (-1)
-            self.aicontrol.drive ([0,1,0,0,0,0])
+            self.aicontrol.drive_z (-2)           ### up -> open binn ###
+            self.aicontrol.drive ([0,1,0,0,0,0])  ### move -> drop cover ###
             rospy.sleep(0.1)
             ## drop cover
-            self.aicontrol.drive ([0,-1,0,0,0,0])
+            self.aicontrol.drive ([0,-1,0,0,0,0]) ### move back to above bin ###
             rospy.sleep(0.1)
-            self.aicontrol.drive_z (-1.5)
-        ## drop
+            self.aicontrol.drive_z (-2.8)
+
+        ## drop x2 times
 
 if __name__ == '__main__':
     binn_mission = BinnMission()
