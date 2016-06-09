@@ -37,10 +37,9 @@ class PathMission (object):
                     break
                 else :
                     print 'Not Center'
-                    count -= 0.5
-                vx = self.aicontrol.adjust (object_data.x/100, -0.4, -0.2, 0.2, 0.4)
-                vy = self.aicontrol.adjust (object_data.y/100, -0.4, -0.2, 0.2, 0.4)
-                self.aicontrol.drive([vx,vy,0,0,0,0])
+                    vx = self.aicontrol.adjust (object_data.x/100, -0.4, -0.2, 0.2, 0.4)
+                    vy = self.aicontrol.adjust (object_data.y/100, -0.4, -0.2, 0.2, 0.4)
+                    self.aicontrol.drive([vx,vy,0,0,0,0])
             else :
                 count -= 1
             rospy.sleep(0.25)
