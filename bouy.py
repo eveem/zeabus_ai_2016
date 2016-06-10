@@ -33,19 +33,19 @@ class BouyMission (object):
                 object_data = self.detect(self.object,String(self.target[i]))
                 object_data = object_data.data
 
-                if object_data.appear :
+                if object_data.appear:
                     if object_data.value > max_area : ### 1 ###
                         max_area = object_data.value
 
                     if object_data.value > 2000 : ### near ###
                         print 'near'
-                        vx = 0.5/object_data.value
+                        vx = (1/object_data.value)*5000
                         vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.25, -0.1, 0.1, 0.25)
                         vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.30, -0.1, 0.1, 0.30)
                         bc = 80
                     else : ### far ###
                         print 'far'
-                        vx = 0.5/object_data.value
+                        vx = (1/object_data.value)*5000
                         vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.35, -0.1, 0.1, 0.35)
                         vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.40, -0.1, 0.1, 0.40)
                         bc = 100
@@ -60,7 +60,7 @@ class BouyMission (object):
                     rospy.sleep (0.25)
 
                 else :
-                    if max_area > const_area :
+                    if max_area > 10000 :
                         print 'hit'
                         break
                     count -= 1
@@ -70,8 +70,8 @@ class BouyMission (object):
             print 'stop state after hit bouy'
 
             print 'backward'
-            self.aicontrol.drive ([-1,0,0,0,0,0])
-            rospy.sleep (2)
+            self.aicontrol.drive ([-0.5,0,0,0,0,0])
+            rospy.sleep (0.25)
 
             print 'go to set point'
             self.aicontrol.goto (self.first_point.position.x,self.first_point.position.y,self.first_point.position.z,1)
