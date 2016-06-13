@@ -1,10 +1,9 @@
 import rospy
 import math
 from std_msgs.msg import String
-''' vision
-from zeabus_vision_srv.srv import ____
-from zeabus_vision_srv.msg import ____
-'''
+from zeabus_vision_srv.srv import Boom_Srv
+from zeabus_vision_srv.msg import Boom_Msg
+from AIControl import AIControl
 from AIControl import AIControl
 
 class SettMission (object):
