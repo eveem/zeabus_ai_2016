@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 import rospy
 import math
 from std_msgs.msg import String
-'''
-from zeabus_vision_srv.srv import Boom_Srv
-from zeabus_vision_srv.msg import Boom_Msg
+''' vision
+from zeabus_vision_srv.srv import ____
+from zeabus_vision_srv.msg import ____
 '''
 from AIControl import AIControl
 
@@ -21,12 +23,13 @@ class GateMission (object):
             #move to target
 
     def run_without_vision (self):
-        self.aicontrol.turn_yaw_relative(15)
-        self.aicontrol.drive ([1,0,0,0,0,0])
-        rospy.sleep(13) #change time to wait
+        # self.aicontrol.turn_yaw_relative(15)
+        # self.aicontrol.drive ([1,0,0,0,0,0])
+        self.aicontrol.goto(19.5,5,-1.5,1)
+        # rospy.sleep(13) #change time to wait
         print "forward"
         self.aicontrol.stop()
-        rospy.sleep(10)
+        rospy.sleep(1)
 
 if __name__ == '__main__':
     print 'start gate'

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 import math
 from std_msgs.msg import String
@@ -17,7 +19,7 @@ class NavigateMission (object):
         ## old vision
         self.aicontrol = AIControl()
         self.object = String('portal')
-        ## self.target = ??
+        self.target = String('yellow')
 
     def run (self):
         print 'run in navigate'
@@ -26,20 +28,22 @@ class NavigateMission (object):
 
         while not rospy.is_shutdown() and not self.aicontrol.is_fail(count):
 
-            object_data = self.detect(self.object,'''String(self.target[i])''')
+            object_data = self.detect(self.object,self.target)
             object_data = object_data.data
+
+            print object_data
 
             if object_data.appear :
                 if object_data.value > 2000 : ### near ###
                     print 'near'
                     vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.25, -0.1, 0.1, 0.25)
                     vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.30, -0.1, 0.1, 0.30)
-                    bc = 80
+                    bc = 20
                 else : ### far ###
                     print 'far'
                     vy = self.aicontrol.adjust ((object_data.y/100)/object_data.value, -0.35, -0.1, 0.1, 0.35)
                     vz = self.aicontrol.adjust ((object_data.x/100)/object_data.value, -0.40, -0.1, 0.1, 0.40)
-                    bc = 100
+                    bc = 40
 
                 if self.aicontrol.is_center([object_data.x,object_data.y],-bc,bc,-bc,bc) :
                     print 'center'
@@ -54,7 +58,7 @@ class NavigateMission (object):
             else :
                 count -= 1
         ### end while ###
-        
+
         print 'see portal'
         self.aicontrol.drive_z (-1)
         print 'drive style'

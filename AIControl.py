@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 import rospy
 import math
 import tf
+
 from geometry_msgs.msg import Twist,TwistStamped,Pose,PoseStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64
@@ -18,7 +21,7 @@ class AIControl():
         self.auv = [0,0,0,0,0,0]
         self.goal = [-999,-999,-999]
         self.command = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
-        rospy.Subscriber ('/zeabus/state', Odometry, self.set_position)
+        rospy.Subscriber ('/auv/state', Odometry, self.set_position)
         self.turn_yaw_rel = rospy.Publisher('/fix/rel/yaw', Float64, queue_size = 10)
         self.turn_yaw_abs = rospy.Publisher('/fix/abs/yaw', Float64, queue_size = 10)
         self.depth = rospy.Publisher('/fix/abs/depth', Float64, queue_size = 10)
@@ -204,6 +207,6 @@ class AIControl():
 
 if __name__=='__main__':
     print 'AIControl'
-    # rospy.init_node('ai_control', anonymous=True) #comment if run main.py
+    #rospy.init_node('ai_control', anonymous=True) #comment if run main.py
     aicontrol=AIControl()
-    # aicontrol.goto(-3,-2,-1.5,-1)
+    aicontrol.goto(-3,-2,0,-1)
